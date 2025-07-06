@@ -117,7 +117,7 @@ const App = () => {
     if (isConfirm) {
       personsService
         .remove(id)
-        .then(returnedPerson => {
+        .then(() => {
           setIsError(false);
           setMessage(`${person.name} was removed from the phonebook`);
           setPersons(persons.filter(p => p.id != person.id));
@@ -125,7 +125,7 @@ const App = () => {
             setMessage(null);
           }, 3000);
         })
-        .catch(error => {
+        .catch(() => {
           setIsError(true);
           setMessage(`Information of ${person.name} has already been removed from the server`);
           setPersons(persons.filter(person => person.id !== id));
