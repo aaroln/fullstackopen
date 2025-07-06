@@ -13,75 +13,73 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 // Get all persons in phonebook
 app.get('/api/persons', (request, response) => {
-    Person.find({}).then(persons => {
-        response.json(persons);
-    });
+  Person.find({}).then(persons => {
+    response.json(persons);
+  });
 });
 
 // Get person from phonebook by id
 app.get('/api/persons/:id', (request, response, next) => {
-    Person.findById(request.params.id)
-        .then(person => {
-            if (person) {
-                response.json(person);
-            } else {
-                response.json(404).end();
-            }
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.json(404).end();
+      }
     })
     .catch(error => next(error));
 });
 
 // Add person to phonebook
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body;
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'content missing'
-        });
-    }
-    
-    const person = new Person({
-        name: body.name,
-        number: body.number
+  const body = request.body;
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'content missing'
     });
+  }
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  });
 
-    person.save().then(savedPerson => {
-        response.json(savedPerson);
-    })
-    .catch(error => next(error));
+  person.save().then(savedPerson => {
+    response.json(savedPerson);
+  }).catch(error => next(error));
 });
 
 // Delete person from phonebook
 app.delete('/api/persons/:id', (request, response, next) => {
-    Person.findByIdAndDelete(request.params.id)
-        .then(result => {
-            response.status(204).send(result);
-        })
-        .catch(error => next(error));
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).send(result);
+    })
+    .catch(error => next(error));
 });
 
 // Update person in phonebook
 app.put('/api/persons/:id', (request, response, next) => {
-    const { name, number } = request.body;
-    Person.findById(request.params.id)
-        .then(person => {
-            if (!person) {
-                return response.status(404).end();
-            }
+  const { name, number } = request.body;
+  Person.findById(request.params.id)
+    .then(person => {
+      if (!person) {
+        return response.status(404).end();
+      }
 
-            person.name = name;
-            person.number = number;
+      person.name = name;
+      person.number = number;
 
-            return person.save().then(updatedPerson => {
-                response.json(updatedPerson);
-            });
-        })
-        .catch(error => next(error));
+      return person.save().then(updatedPerson => {
+        response.json(updatedPerson);
+      });
+    })
+    .catch(error => next(error));
 })
 
 // Unknown endpoint handling
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint'} );
+  response.status(404).send({ error: 'unknown endpoint' });
 }
 
 app.use(unknownEndpoint);
@@ -107,5 +105,5 @@ const PORT = process.env.PORT;
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
