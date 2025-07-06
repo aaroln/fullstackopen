@@ -70,12 +70,13 @@ const App = () => {
             })
             .catch(error => {
               setIsError(true);
-              setMessage(`Information of ${person.name} has already been removed from the server`);
-              setPersons(persons.filter(p => p.id !== person.id));
+              setMessage(`${error.response.data.error}`);
               setTimeout(() => {
                 setMessage(null);
               }, 3000);
-            })
+              setNewName('');
+              setNewNumber('');
+            });
         }
       } else {
         alert(`${newName} is already added to the phonebook`);
@@ -88,6 +89,15 @@ const App = () => {
           setPersons(persons.concat(returnedPerson));
           setIsError(false);
           setMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => {
+          setIsError(true);
+          setMessage(`${error.response.data.error}`);
           setTimeout(() => {
             setMessage(null);
           }, 3000);
@@ -108,7 +118,12 @@ const App = () => {
       personsService
         .remove(id)
         .then(returnedPerson => {
-          setPersons(persons.filter(person => person.id != returnedPerson.id));
+          setIsError(false);
+          setMessage(`${person.name} was removed from the phonebook`);
+          setPersons(persons.filter(p => p.id != person.id));
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
         })
         .catch(error => {
           setIsError(true);
@@ -138,7 +153,7 @@ const App = () => {
         newNumber={newNumber} 
         handleNumberChange={handleNumberChange}
       />
-      <h3>Numbers</h3>
+      <h3>Number</h3>
       <div>
         {includedPersons.length ? 
           includedPersons.map(person => 
